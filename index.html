@@ -1,0 +1,2306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🎉</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1e1e38 0%, #0a0b10 100%);
+            color: #fff;
+        }
+
+        /* --- PASSWORD LOCK SCREEN --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e1b4b, #311042);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-box h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: #f472b6;
+        }
+
+        .login-box input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            outline: none;
+        }
+
+        .login-box button {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .login-box button:hover {
+            background: #db2777;
+            transform: scale(1.05);
+        }
+
+        /* --- JACKPOT SLOT MACHINE CONTAINER --- */
+        #slot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #2a1b40, #090514);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 95;
+            transition: opacity 0.8s ease;
+        }
+
+        .slot-machine-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 3px solid #ffd700;
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 0 35px rgba(255, 215, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .slot-machine-container h3 {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slot-machine-container p {
+            color: #cbd5e1;
+        }
+
+        .slot-housing {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            background: #020617;
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+        }
+
+        .slot-reel {
+            width: 80px;
+            height: 80px;
+            background: #1e293b;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            font-size: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .spin-btn {
+            background: linear-gradient(135deg, #ffd700, #b45309);
+            color: black;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .spin-btn:active {
+            transform: scale(0.95);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @keyframes reelBlur {
+            0% { transform: translateY(-50px); opacity: 0.3; }
+            50% { transform: translateY(50px); opacity: 0.3; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .blur-reel span {
+            display: inline-block;
+            animation: reelBlur 0.15s linear infinite;
+        }
+
+        /* --- FULL SCREEN INTERMEDIATE WISH LAYER --- */
+        #wish-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #2e1065, #0f052d);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s;
+            overflow: hidden;
+        }
+
+        .wish-title {
+            font-size: 4.5rem;
+            color: #0cce66c7;
+            text-shadow: 0 0 20px rgba(203, 11, 11, 0.752), 0 0 40px rgba(13, 82, 165, 0.922);
+            text-align: center;
+            font-weight: 800;
+            line-height: 1.2;
+            padding: 0 1rem;
+            transform: scale(0.3);
+            opacity: 0;
+        }
+
+        #wish-screen.active .wish-title {
+            animation: cinematic-wish 3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes cinematic-wish {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+                filter: blur(12px);
+            }
+            55% {
+                transform: scale(1.12);
+                opacity: 1;
+                filter: blur(0);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        .celebration-element {
+            position: absolute;
+            font-size: 2rem;
+            pointer-events: none;
+            opacity: 0;
+            animation: ascend 3.5s linear infinite;
+        }
+
+        @keyframes ascend {
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- FLOATING BALLOON EFFECTS --- */
+        .balloon {
+            position: fixed;
+            width: 55px;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            z-index: 15;
+            cursor: pointer;
+            animation: floatUp 7s linear forwards; 
+            opacity: 0.75;
+            box-shadow: inset -5px -5px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .balloon::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 24px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 8px solid currentColor;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-60vh) translateX(25px); }
+            100% { transform: translateY(-125vh) translateX(-15px); }
+        }
+
+        /* --- INTERACTIVE DYNAMIC FLOATING CANDLE CAKE ENGINE --- */
+        .cake-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .candles-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            height: 50px;
+            align-items: flex-end;
+            margin-bottom: -2px;
+        }
+
+        .candle-wick {
+            width: 10px;
+            height: 32px;
+            background: linear-gradient(to top, #ec4899, #f472b6);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .candle-wick:hover {
+            transform: scale(1.15);
+        }
+
+        .candle-flame {
+            width: 12px;
+            height: 18px;
+            background: radial-gradient(circle at bottom, #ff007f 20%, #ff7300 60%, #ffeb3b 90%);
+            border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+            position: absolute;
+            top: -16px;
+            left: -1px;
+            box-shadow: 0 0 12px #ff5500, 0 0 24px #ff007f;
+            animation: flickerFlames 0.15s ease-in-out infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        @keyframes flickerFlames {
+            0% { transform: skewX(-3deg) scale(0.95); }
+            100% { transform: skewX(3deg) scale(1.05); }
+        }
+
+        .smoke-puff {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(220, 220, 220, 0.4);
+            border-radius: 50%;
+            top: -12px;
+            left: 0;
+            pointer-events: none;
+            animation: puffAway 0.8s ease-out forwards;
+        }
+
+        @keyframes puffAway {
+            0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0px); }
+            100% { transform: translateY(-40px) scale(3.5); opacity: 0; filter: blur(5px); }
+        }
+
+        .base-cake-block {
+            width: 140px;
+            height: 26px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 6px;
+            box-shadow: inset 0 -4px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .mic-fallback-badge {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        /* --- DASHBOARD SOUND AUDIO BUTTON CONTROLLER --- */
+        .audio-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 80;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background-color 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .audio-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        /* --- MAIN DASHBOARD WINDOW --- */
+        #main-content {
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.2s ease;
+            padding: 3rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(13, 173, 242, 0.5);
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        header h1.unlocked-neon {
+            background: linear-gradient(45deg, #ffd700, #ff007f, #0dadf2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        header p {
+            color: #94a3b8;
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+            opacity: 0.1;
+            pointer-events: none;
+            transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .grid.revealed-gallery,
+        .timeline-container.revealed-gallery {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .timeline-container.revealed-gallery .timeline-milestone {
+            pointer-events: auto;
+        }
+
+        /* --- PLAIN REVEAL SCRATCH CARDS --- */
+        .memory-card {
+            position: relative;
+            height: 320px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            overflow: hidden;
+            background: #020617;
+            user-select: none;
+            -webkit-user-select: none;
+            text-align: left;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-media-box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            background: #000;
+        }
+
+        .card-media-box img, .card-media-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .scratch-canvas {
+            touch-action: none;
+            -ms-touch-action: none;
+            pointer-events: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            cursor: crosshair;
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- SCROLL MASK OPACITY TRANSITIONS --- */
+        .timeline-milestone {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .timeline-container {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to bottom, #ec4899, #3b82f6, #10b981, #f59e0b);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+            z-index: 1;
+        }
+
+        .timeline-milestone {
+            position: relative;
+            width: 50%;
+            padding: 2rem 3rem;
+            z-index: 5;
+        }
+
+        .timeline-milestone.left { left: 0; text-align: right; }
+        .timeline-milestone.right { left: 50%; text-align: left; }
+
+        .timeline-milestone::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: #020617;
+            border: 4px solid #ffd700;
+            top: 32px;
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 0 0 8px #ffd700;
+        }
+
+        .timeline-milestone.right::after { left: -10px; }
+
+        .milestone-header { margin-bottom: 0.75rem; }
+        .milestone-header h4 {
+            font-size: 1.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .card-wrapper-node {
+            display: inline-block;
+            width: 260px;
+            height: 320px;
+            vertical-align: top;
+        }
+
+        @media screen and (max-width: 768px) {
+            .timeline-container::after { left: 31px; }
+            .timeline-milestone {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 70px;
+                padding-right: 15px;
+                text-align: left !important;
+            }
+            .timeline-milestone::after { left: 21px !important; }
+        }
+
+        .error-msg {
+            display: none;
+            margin-top: 12px;
+            color: #f87171;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* --- LANGUAGE SELECTION --- */
+        #language-screen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, #2e1065, #0f052d);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 92;
+            padding: 20px;
+        }
+
+        .language-box {
+            width: min(520px, 94vw);
+            padding: 2rem;
+            border-radius: 24px;
+            text-align: center;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 35px rgba(139,92,246,0.35);
+        }
+
+        .language-box h2 {
+            color: #ffd700;
+            margin-bottom: 0.75rem;
+        }
+
+        .language-box p {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .language-grid button {
+            border: none;
+            border-radius: 14px;
+            padding: 14px 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg, #ec4899, #7c3aed);
+            transition: transform .2s, filter .2s;
+        }
+
+        .language-grid button:hover {
+            transform: translateY(-2px) scale(1.02);
+            filter: brightness(1.12);
+        }
+
+        .language-grid button:last-child {
+            grid-column: 1 / -1;
+        }
+
+        @media screen and (max-width: 480px) {
+            .language-grid { grid-template-columns: 1fr; }
+            .language-grid button:last-child { grid-column: auto; }
+        }
+    
+        /* ================= GRAND BIRTHDAY FINALE ================= */
+        #grand-finale {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: none;
+            opacity: 0;
+            overflow-y: auto;
+            background:
+                radial-gradient(circle at 50% 25%, rgba(139, 92, 246, 0.35), transparent 35%),
+                radial-gradient(circle at 20% 80%, rgba(236, 72, 153, 0.22), transparent 35%),
+                #050511;
+            transition: opacity 1s ease;
+            text-align: center;
+            padding: 40px 20px 70px;
+        }
+
+        #grand-finale.show {
+            opacity: 1;
+        }
+
+        .finale-content {
+            position: relative;
+            z-index: 5;
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .finale-badge {
+            display: inline-block;
+            padding: 9px 18px;
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            backdrop-filter: blur(8px);
+            color: #fef08a;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+
+        .finale-title {
+            margin: 0;
+            font-size: clamp(2.4rem, 7vw, 5.5rem);
+            line-height: 1.05;
+            background: linear-gradient(90deg, #ffd700, #ff4da6, #60a5fa, #34d399, #ffd700);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: finaleGradient 4s linear infinite, finaleTitlePop 1.2s ease-out both;
+            text-shadow: 0 0 30px rgba(255,215,0,.18);
+        }
+
+        @keyframes finaleGradient {
+            to { background-position: 300% center; }
+        }
+
+        @keyframes finaleTitlePop {
+            0% { transform: scale(.65); opacity: 0; }
+            70% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .finale-message {
+            max-width: 760px;
+            margin: 22px auto 30px;
+            color: #e2e8f0;
+            font-size: clamp(1rem, 2.2vw, 1.35rem);
+            line-height: 1.75;
+            min-height: 90px;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: #fff;
+            vertical-align: -0.15em;
+            margin-left: 3px;
+            animation: blinkCursor .7s steps(1) infinite;
+        }
+
+        @keyframes blinkCursor {
+            50% { opacity: 0; }
+        }
+
+        .finale-surprise-btn {
+            border: 0;
+            border-radius: 999px;
+            padding: 15px 30px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            box-shadow: 0 0 0 0 rgba(236,72,153,.55), 0 10px 30px rgba(0,0,0,.35);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .finale-surprise-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 0 10px rgba(236,72,153,.08), 0 15px 35px rgba(0,0,0,.4);
+        }
+
+        .finale-surprise-btn:active {
+            transform: scale(.97);
+        }
+
+        .finale-photo-wall {
+            margin: 45px auto 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            max-width: 1000px;
+        }
+
+        .finale-photo {
+            aspect-ratio: 1 / 1;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,.13);
+            background: #0f172a;
+            box-shadow: 0 8px 25px rgba(0,0,0,.35);
+            opacity: 0;
+            transform: translateY(25px) scale(.92) rotate(var(--rot));
+            animation: wallIn .7s ease forwards;
+            animation-delay: var(--delay);
+        }
+
+        .finale-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .5s ease;
+        }
+
+        .finale-photo:hover img {
+            transform: scale(1.1);
+        }
+
+        @keyframes wallIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(var(--rot));
+            }
+        }
+
+        .finale-heart {
+            position: fixed;
+            left: var(--left);
+            bottom: -60px;
+            font-size: var(--size);
+            z-index: 2;
+            pointer-events: none;
+            animation: heartRise var(--duration) linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes heartRise {
+            0% { transform: translateX(0) translateY(0) scale(.7) rotate(0deg); opacity: 0; }
+            12% { opacity: .9; }
+            100% { transform: translateX(var(--drift)) translateY(-115vh) scale(1.2) rotate(25deg); opacity: 0; }
+        }
+
+        .finale-firework {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            left: var(--fx);
+            top: var(--fy);
+            background: #fff;
+            box-shadow: 0 0 8px #fff, 0 0 20px #ffd700;
+            z-index: 4;
+            pointer-events: none;
+            animation: fireworkParticle 1.2s ease-out forwards;
+        }
+
+        @keyframes fireworkParticle {
+            0% {
+                transform: translate(0,0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(.15);
+                opacity: 0;
+            }
+        }
+
+        .finale-firework-core {
+            position: fixed;
+            left: var(--cx);
+            top: var(--cy);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 20px 8px rgba(255,255,255,.7);
+            z-index: 3;
+            pointer-events: none;
+            animation: coreFlash .35s ease-out forwards;
+        }
+
+        @keyframes coreFlash {
+            0% { transform: scale(.2); opacity: 1; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+
+        .finale-last-surprise {
+            display: none;
+            margin: 35px auto 0;
+            padding: 30px 25px;
+            max-width: 700px;
+            border-radius: 25px;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.16);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 60px rgba(0,0,0,.35);
+            animation: surpriseReveal 1s ease both;
+        }
+
+        .finale-last-surprise.show {
+            display: block;
+        }
+
+        .finale-last-surprise h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 12px;
+        }
+
+        .finale-last-surprise p {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        @keyframes surpriseReveal {
+            from { opacity: 0; transform: translateY(30px) scale(.92); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .finale-footer {
+            margin-top: 35px;
+            color: #94a3b8;
+            font-size: .9rem;
+        }
+
+        @media (max-width: 600px) {
+            #grand-finale { padding: 28px 12px 55px; }
+            .finale-photo-wall { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+            .finale-photo { border-radius: 9px; }
+        }
+
+    
+        /* --- TOUCH CANDLE CONTROL --- */
+        .candle-wick {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .candle-wick:active {
+            transform: scale(1.18);
+        }
+
+    
+        /* --- TWO SPECIAL PHOTOS IN FINAL BIRTHDAY BOX --- */
+        .finale-last-surprise {
+            position: relative;
+            z-index: 10;
+            background: rgba(255,255,255,.10);
+            border: 1px solid rgba(255,255,255,.22);
+        }
+
+        .finale-two-photos {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            max-width: 760px;
+            margin: 26px auto 0;
+        }
+
+        .finale-special-photo {
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            border-radius: 18px;
+            background: #111827;
+            border: 3px solid rgba(255,255,255,.22);
+            box-shadow:
+                0 12px 35px rgba(0,0,0,.38),
+                0 0 25px rgba(236,72,153,.15);
+        }
+
+        .finale-special-photo img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            opacity: 1 !important;
+            filter: none !important;
+            visibility: visible !important;
+        }
+
+        .finale-special-photo:hover img {
+            transform: scale(1.05);
+            transition: transform .45s ease;
+        }
+
+        @media (max-width: 650px) {
+            .finale-two-photos {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+        }
+
+    
+        /* --- ENSURE ALL MEMORY CARDS ARE BRIGHT AFTER CANDLE STAGE --- */
+        #timeline-spine-wrapper.revealed-gallery,
+        .timeline-container.revealed-gallery {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
+
+        #timeline-spine-wrapper.revealed-gallery .timeline-milestone,
+        #timeline-spine-wrapper.revealed-gallery .memory-card,
+        #timeline-spine-wrapper.revealed-gallery .card-media-box,
+        #timeline-spine-wrapper.revealed-gallery .scratch-canvas {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #timeline-spine-wrapper.revealed-gallery .timeline-milestone {
+            pointer-events: auto !important;
+        }
+
+    
+        /* --- CANDLE INSTRUCTION --- */
+        #candle-instruction,
+        .candle-instruction {
+            display: block !important;
+            margin-top: 12px;
+            color: #f8fafc;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: .3px;
+            text-shadow: 0 0 10px rgba(236,72,153,.65);
+            animation: candleHintPulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes candleHintPulse {
+            0%, 100% { opacity: .72; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-2px); }
+        }
+
+        .mic-status-bubble {
+            display: none !important;
+        }
+
+        /* Keep every memory card fully visible and interactive.
+           The timeline itself may fade cards while scrolling in the original code;
+           these overrides prevent that. */
+        #timeline-spine-wrapper,
+        #timeline-spine-wrapper .timeline-milestone,
+        #timeline-spine-wrapper .card-wrapper-node,
+        #timeline-spine-wrapper .memory-card,
+        #timeline-spine-wrapper .card-media-box {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        #timeline-spine-wrapper {
+            pointer-events: auto !important;
+        }
+
+        #timeline-spine-wrapper .timeline-milestone,
+        #timeline-spine-wrapper .card-wrapper-node,
+        #timeline-spine-wrapper .memory-card {
+            filter: none !important;
+        }
+
+        /* Scratch canvas must remain above the image and receive touch/mouse input. */
+        #timeline-spine-wrapper .scratch-canvas {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            touch-action: none !important;
+            z-index: 20 !important;
+        }
+
+    
+        .finale-two-photos,
+        .finale-special-photo,
+        .finale-special-photo img {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+
+        /* ================= BIG FINAL SPECIAL PHOTO REVEAL ================= */
+        /* ===== BIG WATER-DROPLET SCRATCH REVEAL ===== */
+        .finale-two-photos {
+            display: flex !important;
+            justify-content: center !important;
+            width: 100%;
+            margin: 35px auto 0 !important;
+        }
+
+        .reveal-photo-box {
+            position: relative !important;
+            width: min(900px, 94vw) !important;
+            height: min(620px, 72vh) !important;
+            overflow: hidden !important;
+            border-radius: 30px !important;
+            background: #07111f !important;
+            border: 4px solid rgba(255,255,255,.28) !important;
+            box-shadow: 0 20px 75px rgba(0,0,0,.7), 0 0 45px rgba(56,189,248,.25) !important;
+        }
+
+        #special-photo {
+            position: absolute !important;
+            inset: 0 !important;
+            z-index: 1 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            display: block !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: scale(1.08);
+            filter: blur(12px);
+            transition: transform 1.4s ease, filter 1.4s ease;
+        }
+
+        #special-photo.revealed {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: scale(1);
+            filter: blur(0);
+        }
+
+        /* Water layer that the user scratches away */
+        #special-water-canvas {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 10 !important;
+            display: block !important;
+            cursor: crosshair !important;
+            touch-action: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            transition: opacity 1.2s ease, visibility 1.2s ease !important;
+        }
+
+        #special-water-canvas.finished {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        .water-instruction {
+            position: absolute;
+            z-index: 12;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            color: rgba(255,255,255,.95);
+            text-align: center;
+            font-weight: 800;
+            font-size: clamp(1.15rem, 3vw, 2rem);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 12px rgba(0,0,0,.7);
+            animation: waterInstructionPulse 1.8s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        .water-instruction span {
+            display: block;
+            font-size: .65em;
+            margin-top: 8px;
+            letter-spacing: 1px;
+            opacity: .9;
+        }
+
+        .water-instruction.hidden {
+            opacity: 0;
+            transition: opacity .5s ease;
+        }
+
+        @keyframes waterInstructionPulse {
+            0%,100% { transform: translate(-50%,-50%) scale(1); opacity: .9; }
+            50% { transform: translate(-50%,-50%) scale(1.06); opacity: 1; }
+        }
+
+        .water-drop-ring {
+            position: absolute;
+            z-index: 11;
+            width: 35px;
+            height: 35px;
+            border: 2px solid rgba(186,230,253,.7);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: dropRipple .8s ease-out forwards;
+        }
+
+        @keyframes dropRipple {
+            from { transform: translate(-50%,-50%) scale(.25); opacity: .9; }
+            to { transform: translate(-50%,-50%) scale(2.5); opacity: 0; }
+        }
+
+        @media (max-width: 650px) {
+            .reveal-photo-box {
+                width: 94vw !important;
+                height: 64vh !important;
+                min-height: 360px;
+                border-radius: 20px !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="volume-widget" class="audio-toggle-btn" onclick="toggleDashboardAudioMuteState()">🔊</div>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>🔒 Unlock Your Birthday Surprise</h2>
+            <p style="color: #cbd5e1; margin-bottom: 1.5rem;">Enter your Date of Birth to enter:</p>
+            <input type="date" id="dob-input">
+            <button onclick="checkPassword()">Unlock ✨</button>
+            <div class="error-msg" id="error-txt" aria-live="polite">Oops! That's not your birthday. Try again! 🤔</div>
+        </div>
+    </div>
+
+    <div id="slot-screen">
+        <div class="slot-machine-container">
+            <h3>🎰 Birthday Jackpot Roulette</h3>
+            <p>Spin and match 3 Birthday items to win!</p>
+
+            <div class="slot-housing">
+                <div class="slot-reel" id="reel1"><span>🎁</span></div>
+                <div class="slot-reel" id="reel2"><span>🎉</span></div>
+                <div class="slot-reel" id="reel3"><span>🎂</span></div>
+            </div>
+
+            <button class="spin-btn" id="spin-button" onclick="spinSlots()">
+                SPIN ⚡
+            </button>
+        </div>
+    </div>
+
+    <div id="language-screen">
+        <div class="language-box">
+            <h2>🎉 Choose Your Birthday Wish Language</h2>
+            <p>Select a language for the birthday message.</p>
+            <div class="language-grid">
+                <button onclick="selectWishLanguage('ta')">தமிழ்</button>
+                <button onclick="selectWishLanguage('te')">తెలుగు</button>
+                <button onclick="selectWishLanguage('kn')">ಕನ್ನಡ</button>
+                <button onclick="selectWishLanguage('ml')">മലയാളം</button>
+                <button onclick="selectWishLanguage('en')">English</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="wish-screen">
+        <h1 class="wish-title" id="wish-title">Happy Birthday<br><span style="color: #0e7fcbb1;" id="wish-name">Bestie</span>! 🎂🎉</h1>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <div class="cake-container">
+                <div class="candles-row" id="candles-axis-housing">
+                    <div class="candle-wick" role="button" tabindex="0"
+                         onclick="extinguishManualCandleClick(this)"
+                         ontouchstart="event.preventDefault(); extinguishManualCandleClick(this)">
+                        <div class="candle-flame"></div>
+                    </div>
+                    <div class="candle-wick" role="button" tabindex="0"
+                         onclick="extinguishManualCandleClick(this)"
+                         ontouchstart="event.preventDefault(); extinguishManualCandleClick(this)">
+                        <div class="candle-flame"></div>
+                    </div>
+                    <div class="candle-wick" role="button" tabindex="0"
+                         onclick="extinguishManualCandleClick(this)"
+                         ontouchstart="event.preventDefault(); extinguishManualCandleClick(this)">
+                        <div class="candle-flame"></div>
+                    </div>
+                </div>
+                <div class="base-cake-block"></div>
+                <div id="candle-instruction" class="candle-instruction">👆 Touch to blow the candle</div>
+            </div>
+            <h1 id="header-greeting-title">Happy Birthday, <span style="color: #0dadf2d8;" id="main-friend-name">Bestie</span>! 🎂✨</h1>
+            <p id="header-instruction-hint"></p>
+        </header>
+
+        <div class="timeline-container" id="timeline-spine-wrapper"></div>
+    </div>
+
+
+    <!-- ================= GRAND BIRTHDAY FINALE ================= -->
+    <div id="grand-finale">
+        <div class="finale-content">
+            <div class="finale-badge">🎊 MEMORY JOURNEY COMPLETE 🎊</div>
+            <h1 class="finale-title" id="finale-title">You Made It! 🎉</h1>
+            <div class="finale-message" id="finale-message"></div>
+
+            <button class="finale-surprise-btn" id="finale-surprise-btn" onclick="openFinalSurprise()">
+                🎁 One Last Surprise
+            </button>
+
+            <div class="finale-last-surprise" id="finale-last-surprise">
+                <h2 id="final-surprise-title">❤️</h2>
+                <p id="final-surprise-text"></p>
+
+                <div class="finale-two-photos">
+                    <div class="finale-special-photo reveal-photo-box" id="special-photo-box">
+                        <img src="assets/21.jpeg" alt="Special memory 1" id="special-photo">
+                        <canvas id="special-water-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="finale-photo-wall" id="finale-photo-wall"></div>
+            <div class="finale-footer" id="finale-footer">Made with ❤️ and lots of memories</div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_DOB = "2006-09-30"; 
+        const FRIEND_NAME = "Shruthi"; 
+
+        // ADJUSTABLE MUSIC MATRIX: Default loop path file url
+        const BACKGROUND_MUSIC_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+
+        document.getElementById('wish-name').innerText = FRIEND_NAME;
+        document.getElementById('main-friend-name').innerText = FRIEND_NAME;
+
+        // AUDIO NODES PIPELINE
+        const scratchSound = new Audio("https://actions.google.com/sounds/v1/cartoon/squeaky_cardboard_scrape.ogg");
+        scratchSound.loop = true; 
+        scratchSound.volume = 0.4; 
+
+        const tileFlipSound = new Audio("https://actions.google.com/sounds/v1/ui/click_on_button.ogg");
+        const matchWinSound = new Audio("https://actions.google.com/sounds/v1/cartoon/slide_whistle_up_fast.ogg");
+        
+        const ambientLoopAudio = new Audio(BACKGROUND_MUSIC_URL);
+        ambientLoopAudio.loop = true;
+        ambientLoopAudio.volume = 0.45;
+
+        // --- 20 MEMORY PHOTOS ---
+        const TIMELINE_DATA = Array.from({ length: 20 }, (_, i) => ({
+            type: "image",
+            src: `assets/${i + 1}.jpeg`,
+            emoji: ["😎", "✨", "⭐", "🙌", "🤪", "🍕", "🔥", "🌊", "📝", "🥳", "🍿", "🍩", "🌐", "💬", "🏃", "🥾", "🎵", "🏆", "🎨", "🎉"][i]
+        }));
+
+        // --- TIMELINE AXIS GENERATOR ---
+        function buildChronologicalTimeline() {
+            const container = document.getElementById('timeline-spine-wrapper');
+            container.innerHTML = '';
+
+            TIMELINE_DATA.forEach((item, index) => {
+                const milestone = document.createElement('div');
+                const currentSide = (index % 2 === 0) ? 'left' : 'right';
+                milestone.className = `timeline-milestone ${currentSide}`;
+
+                let mediaHTML = '';
+                if (item.type === 'video') {
+                    mediaHTML = `<video src="${item.src}" controls preload="metadata"></video>`;
+                } else {
+                    mediaHTML = `<img src="${item.src}" alt="Memory">`;
+                }
+
+                milestone.innerHTML = `
+                    <div class="card-wrapper-node">
+                        <div class="memory-card">
+                            <div class="card-media-box">
+                                ${mediaHTML}
+                            </div>
+                            <canvas class="scratch-canvas" id="canvas-timeline-${index}"></canvas>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(milestone);
+
+                setTimeout(() => {
+                    initScratchCanvas(`canvas-timeline-${index}`, item.emoji || '🎁');
+                }, 20);
+            });
+
+            window.addEventListener('scroll', handleTimelineScrollFadeMasks);
+            handleTimelineScrollFadeMasks(); 
+        }
+
+        function handleTimelineScrollFadeMasks() {
+            const milestones = document.querySelectorAll('.timeline-milestone');
+            const windowHeight = window.innerHeight;
+
+            milestones.forEach(m => {
+                const rect = m.getBoundingClientRect();
+                const elementCenter = rect.top + rect.height / 2;
+                
+                if (elementCenter < 120 || elementCenter > windowHeight - 120) {
+                    m.style.opacity = "0.20";
+                    m.style.transform = "scale(0.95)";
+                } else {
+                    m.style.opacity = "1";
+                    m.style.transform = "scale(1)";
+                }
+            });
+        }
+
+        // --- MICROPHONE ANALYSER CORE: REAL-TIME BLOW DETECTION ---
+        let micAudioStream = null;
+        let micAudioContext = null;
+        let micAudioAnalyser = null;
+        let isMicPollingActive = false;
+
+        async function initializeMicrophoneBlowingStream() {
+            try {
+                const audioConstraints = { audio: { echoCancellation: true, noiseSuppression: false } };
+                micAudioStream = await navigator.mediaDevices.getUserMedia(audioConstraints);
+                
+                // Set up standard AudioContext pipelines
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                micAudioContext = new AudioContextClass();
+                const source = micAudioContext.createMediaStreamSource(micAudioStream);
+                
+                micAudioAnalyser = micAudioContext.createAnalyser();
+                micAudioAnalyser.fftSize = 256;
+                source.connect(micAudioAnalyser);
+
+                isMicPollingActive = true;
+                document.getElementById('mic-status-bubble').innerText = "👆 ";
+                document.getElementById('mic-status-bubble').style.color = "#10b981";
+                
+                pollMicrophoneVolumeLevel();
+            } catch (err) {
+                console.warn("Microphone validation fallback triggered.");
+                document.getElementById('mic-status-bubble').innerText = "👆 ";
+                document.getElementById('mic-status-bubble').style.color = "#f59e0b";
+            }
+        }
+
+        function pollMicrophoneVolumeLevel() {
+            if (!isMicPollingActive || activeCandlesLitCount === 0) return;
+
+            const bufferLength = micAudioAnalyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            micAudioAnalyser.getByteFrequencyData(dataArray);
+
+            // Compute energy inside blowing audio ranges (frequencies between 30Hz - 250Hz)
+            let blowRangeSum = 0;
+            let targetBinsCount = 0;
+            for (let i = 1; i < 10; i++) {
+                blowRangeSum += dataArray[i];
+                targetBinsCount++;
+            }
+            const averageBlowIntensity = blowRangeSum / targetBinsCount;
+
+            // Blow detection volume trigger threshold value constant
+            if (averageBlowIntensity > 55) { 
+                extinguishNextCandleSequence();
+                isMicPollingActive = false; // Add brief recovery lockout period
+                setTimeout(() => { isMicPollingActive = true; pollMicrophoneVolumeLevel(); }, 700);
+                return;
+            }
+
+            requestAnimationFrame(pollMicrophoneVolumeLevel);
+        }
+
+        // --- FLOATING CANDLE ACTION WORKFLOWS ---
+        let activeCandlesLitCount = 3;
+
+        function extinguishManualCandleClick(wickElement) {
+            const flame = wickElement.querySelector('.candle-flame');
+            if (!flame || flame.style.opacity === '0') return;
+
+            // Touch/click the candle to extinguish it.
+            executeExtinguishEffects(wickElement, flame);
+        }
+
+        function extinguishNextCandleSequence() {
+            const currentWicks = document.querySelectorAll('.candle-wick');
+            for (let i = 0; i < currentWicks.length; i++) {
+                const flame = currentWicks[i].querySelector('.candle-flame');
+                if (flame && flame.style.opacity !== '0') {
+                    executeExtinguishEffects(currentWicks[i], flame);
+                    break;
+                }
+            }
+        }
+
+        function executeExtinguishEffects(wick, flame) {
+            flame.style.opacity = '0';
+            activeCandlesLitCount--;
+
+            const smoke = document.createElement('div');
+            smoke.className = 'smoke-puff';
+            wick.appendChild(smoke);
+            setTimeout(() => smoke.remove(), 800);
+
+            tileFlipSound.play().catch(e => {});
+
+            if (activeCandlesLitCount === 0) {
+                matchWinSound.play().catch(e => {});
+                
+                // Clear media recording streams securely
+                if (micAudioStream) {
+                    micAudioStream.getTracks().forEach(track => track.stop());
+                }
+                isMicPollingActive = false;
+
+                document.getElementById('mic-status-bubble').style.display = 'none';
+                document.getElementById('header-greeting-title').classList.add('unlocked-neon');
+                document.getElementById('timeline-spine-wrapper').classList.add('revealed-gallery');
+                brightenAllMemoryCards();
+            }
+        }
+
+        // --- AUDIO CONTROLLER SOUND TOGGLE WIDGETS ---
+        function toggleDashboardAudioMuteState() {
+            const widget = document.getElementById('volume-widget');
+            if (ambientLoopAudio.paused) {
+                ambientLoopAudio.play().catch(e => console.log("Stream loop synced"));
+                widget.innerText = "🔊";
+                widget.style.color = "#fff";
+            } else {
+                ambientLoopAudio.pause();
+                widget.innerText = "🔇";
+                widget.style.color = "#ef4444";
+            }
+        }
+
+        // --- SLOT MACHINE LOGIC ENGINE ---
+        const slotSymbols = ['🎂', '🎉', '🎁', '🎈', '🥳'];
+        let spinCount = 0;
+
+        function spinSlots() {
+            spinCount++;
+
+            const btn = document.getElementById('spin-button');
+            const r1 = document.getElementById('reel1');
+            const r2 = document.getElementById('reel2');
+            const r3 = document.getElementById('reel3');
+
+            btn.disabled = true;
+            r1.classList.add('blur-reel');
+            r2.classList.add('blur-reel');
+            r3.classList.add('blur-reel');
+
+            tileFlipSound.play().catch(e => {});
+            const isWin = spinCount >= 2;
+
+            setTimeout(() => {
+                r1.classList.remove('blur-reel');
+                r1.querySelector('span').innerText = isWin ? '🎂' : slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+            }, 1000);
+
+            setTimeout(() => {
+                r2.classList.remove('blur-reel');
+                r2.querySelector('span').innerText = isWin ? '🎂' : slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+            }, 1500);
+
+            setTimeout(() => {
+                r3.classList.remove('blur-reel');
+                r3.querySelector('span').innerText = isWin ? '🎂' : slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+
+                if (isWin) {
+                    matchWinSound.play().catch(e => {});
+                    setTimeout(() => {
+                        document.getElementById('slot-screen').style.opacity = "0";
+                        setTimeout(() => {
+                            document.getElementById('slot-screen').style.display = "none";
+                            triggerMainCelebrationWishSequence();
+                        }, 800);
+                    }, 1000);
+                } else {
+                    btn.disabled = false;
+                }
+            }, 2000);
+        }
+
+        let userAuthDateCache = "1998-05-25";
+
+        function triggerMainCelebrationWishSequence() {
+            const languageScreen = document.getElementById("language-screen");
+            languageScreen.style.display = "flex";
+        }
+
+        function selectWishLanguage(language) {
+            const wishes = {
+                en: `Happy Birthday<br><span>${FRIEND_NAME}</span>! 🎂🎉`,
+                ta: `இனிய பிறந்தநாள் வாழ்த்துக்கள்<br><span>${FRIEND_NAME}</span>! 🎂🎉`,
+                te: `హృదయపూర్వక జన్మదిన శుభాకాంక్షలు<br><span>${FRIEND_NAME}</span>! 🎂🎉`,
+                kn: `ಹುಟ್ಟುಹಬ್ಬದ ಹಾರ್ದಿಕ ಶುಭಾಶಯಗಳು<br><span>${FRIEND_NAME}</span>! 🎂🎉`,
+                ml: `ഹൃദയം നിറഞ്ഞ ജന്മദിനാശംസകൾ<br><span>${FRIEND_NAME}</span>! 🎂🎉`
+            };
+
+            const languageScreen = document.getElementById("language-screen");
+            const wishScreen = document.getElementById("wish-screen");
+            const wishTitle = document.getElementById("wish-title");
+
+            // Use only a known language; default to English otherwise.
+            const selectedWish = wishes[language] || wishes.en;
+            wishTitle.innerHTML = selectedWish;
+
+            // Make sure the selected-language wish is visible and its animation restarts.
+            languageScreen.style.display = "none";
+            wishScreen.style.display = "flex";
+            wishScreen.style.visibility = "visible";
+            wishScreen.style.opacity = "1";
+            wishScreen.classList.remove("active");
+            wishTitle.style.opacity = "0";
+            wishTitle.style.transform = "scale(0.3)";
+            void wishTitle.offsetWidth;
+            wishScreen.classList.add("active");
+            wishTitle.style.animation = "cinematic-wish 3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards";
+
+            startConfettiLoop();
+
+            setTimeout(() => {
+                wishScreen.style.opacity = "0";
+                setTimeout(() => {
+                    wishScreen.style.display = "none";
+                    wishScreen.style.visibility = "hidden";
+                    stopConfettiLoop();
+
+                    buildChronologicalTimeline();
+                    const mainContent = document.getElementById("main-content");
+                    mainContent.style.opacity = "1";
+                    mainContent.style.visibility = "visible";
+
+                    document.getElementById('volume-widget').style.visibility = "visible";
+                    document.getElementById('volume-widget').style.opacity = "1";
+                    ambientLoopAudio.play().catch(e => console.log("Audio waiting for user click interaction gesture"));
+
+                    startBalloonEngine();
+                    // Microphone disabled — candles are controlled by touch/click.
+                }, 1000);
+            }, 4000);
+        }
+
+        // --- SCRATCH CANVAS ENGINE WITH REVEAL FIREWORKS SHOWER ---
+        function initScratchCanvas(canvasId, emojiText) {
+            const canvasEl = document.getElementById(canvasId);
+            if (!canvasEl) return;
+            const ctxEl = canvasEl.getContext('2d');
+            
+            const widthEl = canvasEl.offsetWidth || 260;
+            const heightEl = canvasEl.offsetHeight || 320;
+            canvasEl.width = widthEl;
+            canvasEl.height = heightEl;
+
+            ctxEl.fillStyle = '#111111'; 
+            ctxEl.fillRect(0, 0, widthEl, heightEl);
+
+            for (let i = 0; i < 700; i++) {
+                ctxEl.fillStyle = Math.random() > 0.5 ? '#334155' : '#020617'; 
+                ctxEl.fillRect(Math.random() * widthEl, Math.random() * heightEl, 1.5, 1.5);
+            }
+
+            ctxEl.strokeStyle = 'rgba(13, 173, 242, 0.5)'; 
+            ctxEl.lineWidth = 6;
+            ctxEl.strokeRect(3, 3, widthEl - 6, heightEl - 6);
+
+            ctxEl.shadowColor = "rgba(0, 0, 0, 0.35)";
+            ctxEl.shadowBlur = 10;
+            ctxEl.fillStyle = "#ffffff";
+            ctxEl.font = "72px Segoe UI, sans-serif";
+            ctxEl.textAlign = "center";
+            ctxEl.textBaseline = "middle";
+            ctxEl.fillText(emojiText, widthEl / 2, heightEl / 2 - 10);
+
+            ctxEl.shadowBlur = 0;
+
+            ctxEl.fillStyle = "#475569";
+            ctxEl.font = "bold 12px Segoe UI, sans-serif";
+            ctxEl.fillText("SCRATCH TO REVEAL", widthEl / 2, heightEl / 2 + 60);
+
+            let isDrawing = false;
+            const totalPixels = widthEl * heightEl;
+
+            function scratch(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvasEl.getBoundingClientRect();
+                const point = e.touches && e.touches.length ? e.touches[0] : e;
+                const clientX = point.clientX;
+                const clientY = point.clientY;
+                
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+
+                if (scratchSound.paused) {
+                    scratchSound.play().catch(err => console.log("Audio pipeline waiting"));
+                }
+
+                ctxEl.globalCompositeOperation = 'destination-out';
+                ctxEl.beginPath();
+                ctxEl.arc(x, y, 32, 0, Math.PI * 2); 
+                ctxEl.fill();
+
+                if (Math.random() > 0.25) {
+                    createScratchDebrisCrumbs(canvasEl.parentElement, x, y);
+                }
+
+                if (Math.random() > 0.5) {
+                    createGlitterParticlesInsideCard(canvasEl.parentElement, x, y);
+                }
+
+                if (Math.random() > 0.8) {
+                    checkScratchPercentage();
+                }
+            }
+
+            function createScratchDebrisCrumbs(cardContainer, x, y) {
+                for(let i = 0; i < 3; i++) {
+                    const crumb = document.createElement('div');
+                    crumb.className = 'scratch-debris';
+                    crumb.style.backgroundColor = Math.random() > 0.5 ? '#475569' : '#1e293b';
+                    crumb.style.left = x + 'px';
+                    crumb.style.top = y + 'px';
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 25 + Math.random() * 35;
+                    const targetX = Math.cos(angle) * speed;
+                    const targetY = Math.sin(angle) * speed + 45; 
+
+                    crumb.style.setProperty('--x', `${targetX}px`);
+                    crumb.style.setProperty('--y', `${targetY}px`);
+
+                    cardContainer.appendChild(crumb);
+                    setTimeout(() => crumb.remove(), 550);
+                }
+            }
+
+            function checkScratchPercentage() {
+                try {
+                    const imgData = ctxEl.getImageData(0, 0, widthEl, heightEl);
+                    const pixels = imgData.data;
+                    let transparentCount = 0;
+
+                    for (let i = 3; i < pixels.length; i += 40) {
+                        if (pixels[i] === 0) {
+                            transparentCount += 10;
+                        }
+                    }
+
+                    if ((transparentCount / totalPixels) > 0.45) {
+                        canvasEl.style.opacity = '0';
+                        scratchSound.pause(); 
+                        
+                        // --- INTEGRATION: CARD REVEAL fireworks burst SPARK SYSTEM ---
+                        const cardRect = canvasEl.getBoundingClientRect();
+                        const midX = cardRect.left + (cardRect.width / 2);
+                        const midY = cardRect.top + (cardRect.height / 2);
+
+                        for (let i = 0; i < 22; i++) {
+                            const spark = document.createElement('div');
+                            spark.className = 'sparkle star';
+                            spark.style.position = 'fixed';
+                            spark.style.left = midX + 'px';
+                            spark.style.top = midY + 'px';
+                            
+                            const angle = (i / 22) * Math.PI * 2;
+                            const rangeDistance = 55 + Math.random() * 75;
+                            
+                            spark.style.setProperty('--x', `${Math.cos(angle) * rangeDistance}px`);
+                            spark.style.setProperty('--y', `${Math.sin(angle) * rangeDistance}px`);
+                            
+                            document.body.appendChild(spark);
+                            setTimeout(() => spark.remove(), 800);
+                        }
+
+                        setTimeout(() => {
+                            canvasEl.remove();
+
+                            // Trigger the Grand Finale after the 20th photo is revealed.
+                            if (canvasId === 'canvas-timeline-19') {
+                                triggerGrandFinaleAfterLastPhoto();
+                            }
+
+                            const video = canvasEl.parentElement.querySelector('video');
+                            if(video) video.play().catch(e => console.log('Autoplay handled'));
+                        }, 500);
+                    }
+                } catch(err) {
+                    console.log("Context tracking tracing adjusted.");
+                }
+            }
+
+            // Robust mouse + touchscreen scratching.
+            const startAction = (e) => {
+                e.preventDefault();
+                isDrawing = true;
+                scratch(e);
+            };
+
+            const moveAction = (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                scratch(e);
+            };
+
+            const stopAction = () => {
+                isDrawing = false;
+                scratchSound.pause();
+            };
+
+            // Pointer events work for mouse, touch and pen.
+            canvasEl.addEventListener('pointerdown', startAction);
+            canvasEl.addEventListener('pointermove', moveAction);
+            canvasEl.addEventListener('pointerup', stopAction);
+            canvasEl.addEventListener('pointercancel', stopAction);
+            canvasEl.addEventListener('pointerleave', stopAction);
+
+            // Prevent the page from stealing the touch gesture.
+            canvasEl.addEventListener('touchstart', startAction, { passive: false });
+            canvasEl.addEventListener('touchmove', moveAction, { passive: false });
+            canvasEl.addEventListener('touchend', stopAction, { passive: false });
+        }
+
+        function createGlitterParticlesInsideCard(cardEl, x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle star';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 30 + Math.random() * 40;
+            
+            sparkle.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+            sparkle.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+            
+            cardEl.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 800);
+        }
+
+        // --- SECURITY CONTROLLER ---
+        function checkPassword() {
+            const userInput = document.getElementById("dob-input").value;
+            const loginScreen = document.getElementById("login-screen");
+            const slotScreen = document.getElementById("slot-screen");
+            const errorTxt = document.getElementById("error-txt");
+            const loginBox = document.querySelector('.login-box');
+
+            // Always hide the old error first.
+            errorTxt.style.display = "none";
+            loginBox.style.transform = "translateX(0)";
+
+            if (userInput === CORRECT_DOB) {
+                // Correct DOB: error message must stay hidden.
+                userAuthDateCache = userInput;
+                errorTxt.style.display = "none";
+
+                loginScreen.style.opacity = "0";
+                setTimeout(() => {
+                    loginScreen.style.display = "none";
+                    slotScreen.style.display = "flex";
+                    slotScreen.style.opacity = "1";
+                }, 800);
+            } else {
+                // Wrong DOB: show the error only now.
+                errorTxt.style.display = "block";
+                loginBox.style.transform = "translateX(10px)";
+                setTimeout(() => loginBox.style.transform = "translateX(-10px)", 100);
+                setTimeout(() => loginBox.style.transform = "translateX(0)", 200);
+            }
+        }
+
+        // --- FLOATING BACKGROUND BALLOON ENGINE ---
+        let balloonInterval = null;
+        const balloonColors = ['#ec4899', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
+
+        function startBalloonEngine() {
+            balloonInterval = setInterval(() => {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                const pickedColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+                balloon.style.backgroundColor = pickedColor;
+                balloon.style.color = pickedColor; 
+                balloon.style.left = Math.random() * 90 + 'vw';
+                balloon.style.top = '105vh'; 
+                balloon.style.animationDuration = (5 + Math.random() * 4) + 's';
+                
+                const popAction = function(e) {
+                    e.stopPropagation(); 
+                    const rect = balloon.getBoundingClientRect();
+                    const xPos = Math.floor(rect.left + rect.width / 2);
+                    const yPos = Math.floor(rect.top + rect.height / 2);
+                    
+                    createGlitterBurstAtCoords(xPos, yPos);
+                    balloon.remove();
+                };
+
+                balloon.addEventListener('click', popAction);
+                balloon.addEventListener('touchstart', popAction);
+                document.body.appendChild(balloon);
+                setTimeout(() => balloon.remove(), 9000);
+            }, 1500); 
+        }
+
+        function createGlitterBurstAtCoords(x, y) {
+            const particleCount = 15;
+            for (let i = 0; i < particleCount; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle star';
+                sparkle.style.position = 'fixed';
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 40 + Math.random() * 60;
+                sparkle.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+                sparkle.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 800);
+            }
+        }
+
+        // --- BACKGROUND CONFETTI ELEMENT LOGIC ---
+        let confettiInterval = null;
+        const emojis = ['🎉', '🎂', '🥳', '🎁', '🎈', '✨', '💖'];
+
+        function startConfettiLoop() {
+            const container = document.getElementById('wish-screen');
+            confettiInterval = setInterval(() => {
+                const element = document.createElement('div');
+                element.className = 'celebration-element';
+                element.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                element.style.left = Math.random() * 95 + 'vw';
+                element.style.animationDuration = (2.5 + Math.random() * 2) + 's' ;
+                container.appendChild(element);
+                setTimeout(() => element.remove(), 4500);
+            }, 120);
+        }
+
+        function stopConfettiLoop() {
+            if(confettiInterval) clearInterval(confettiInterval);
+        }
+    
+        /* ================= GRAND BIRTHDAY FINALE LOGIC ================= */
+
+        const FINAL_LANGUAGE_TEXT = {
+            en: {
+                title: "You Made It! 🎉",
+                message: "Wishing you beautiful days ahead, new adventures, peaceful moments, big dreams and many more reasons to smile. May every upcoming day bring you happiness and wonderful memories! ❤️",
+                button: "🎁 One Last Surprise",
+                surpriseTitle: "Happy Birthday, Shruthi! 🎂",
+                surpriseText: "May your next chapter be filled with happiness, beautiful memories, big dreams and countless reasons to smile. Keep shining and keep being you! ❤️🥳",
+                footer: "Made with ❤️ and lots of memories"
+            },
+            ta: {
+                title: "நினைவுப் பயணம் முடிந்தது! 🎉",
+                message: "வரும் நாட்கள் அனைத்தும் மகிழ்ச்சி, அமைதி, புதிய அனுபவங்கள், பெரிய கனவுகள் மற்றும் அழகான நினைவுகளால் நிறைந்திருக்கட்டும். ஒவ்வொரு நாளும் உங்களுக்கு பல காரணங்களால் புன்னகையை தரட்டும்! ❤️",
+                button: "🎁 இன்னும் ஒரு ஆச்சரியம்",
+                surpriseTitle: "இனிய பிறந்தநாள் வாழ்த்துக்கள், Shruthi! 🎂",
+                surpriseText: "உங்கள் அடுத்த பயணம் மகிழ்ச்சி, அழகான நினைவுகள், பெரிய கனவுகள் மற்றும் எண்ணற்ற புன்னகைகளால் நிறைந்திருக்கட்டும். எப்போதும் இப்படியே ஜொலித்துக் கொண்டிருங்கள்! ❤️🥳",
+                footer: "❤️ அன்பும் அழகான நினைவுகளும் சேர்ந்து உருவாக்கியது"
+            },
+            te: {
+                title: "మీ జ్ఞాపకాల ప్రయాణం పూర్తయింది! 🎉",
+                message: "రాబోయే రోజులు ఆనందం, ప్రశాంతత, కొత్త అనుభవాలు, పెద్ద కలలు మరియు అందమైన జ్ఞాపకాలతో నిండిపోవాలి. ప్రతి రోజు మీకు నవ్వడానికి ఎన్నో కారణాలను తీసుకురావాలి! ❤️",
+                button: "🎁 మరో చివరి సర్ప్రైజ్",
+                surpriseTitle: "హృదయపూర్వక జన్మదిన శుభాకాంక్షలు, Shruthi! 🎂",
+                surpriseText: "మీ జీవితంలోని తదుపరి అధ్యాయం ఆనందం, అందమైన జ్ఞాపకాలు, పెద్ద కలలు మరియు ఎన్నో చిరునవ్వులతో నిండిపోవాలి. ఎప్పుడూ ఇలాగే వెలుగుతూ ఉండండి! ❤️🥳",
+                footer: "❤️ ప్రేమతో మరియు ఎన్నో మధురమైన జ్ఞాపకాలతో"
+            },
+            kn: {
+                title: "ನಿಮ್ಮ ನೆನಪುಗಳ ಪಯಣ ಪೂರ್ಣಗೊಂಡಿದೆ! 🎉",
+                message: "ಮುಂದಿನ ದಿನಗಳು ಸಂತೋಷ, ನೆಮ್ಮದಿ, ಹೊಸ ಅನುಭವಗಳು, ದೊಡ್ಡ ಕನಸುಗಳು ಮತ್ತು ಸುಂದರ ನೆನಪುಗಳಿಂದ ತುಂಬಿರಲಿ. ಪ್ರತಿದಿನವೂ ನಿಮಗೆ ನಗಲು ಅನೇಕ ಕಾರಣಗಳನ್ನು ತರಲಿ! ❤️",
+                button: "🎁 ಇನ್ನೊಂದು ಕೊನೆಯ ಸರ್ಪ್ರೈಸ್",
+                surpriseTitle: "ಹುಟ್ಟುಹಬ್ಬದ ಹಾರ್ದಿಕ ಶುಭಾಶಯಗಳು, Shruthi! 🎂",
+                surpriseText: "ನಿಮ್ಮ ಮುಂದಿನ ಜೀವನದ ಅಧ್ಯಾಯವು ಸಂತೋಷ, ಸುಂದರ ನೆನಪುಗಳು, ದೊಡ್ಡ ಕನಸುಗಳು ಮತ್ತು ಅನೇಕ ನಗುಗಳಿಂದ ತುಂಬಿರಲಿ. ಸದಾ ಹೀಗೆ ಹೊಳೆಯುತ್ತಿರಿ! ❤️🥳",
+                footer: "❤️ ಪ್ರೀತಿ ಮತ್ತು ಅನೇಕ ಸುಂದರ ನೆನಪುಗಳೊಂದಿಗೆ"
+            },
+            ml: {
+                title: "നമ്മുടെ ഓർമ്മകളുടെ യാത്ര പൂർത്തിയായി! 🎉",
+                message: "വരാനിരിക്കുന്ന ദിവസങ്ങൾ സന്തോഷവും സമാധാനവും പുതിയ അനുഭവങ്ങളും വലിയ സ്വപ്നങ്ങളും മനോഹരമായ ഓർമ്മകളും കൊണ്ട് നിറഞ്ഞിരിക്കട്ടെ. ഓരോ ദിവസവും നിങ്ങൾക്ക് പുഞ്ചിരിക്കാൻ നിരവധി കാരണങ്ങൾ നൽകട്ടെ! ❤️",
+                button: "🎁 ഒരു അവസാന സർപ്രൈസ്",
+                surpriseTitle: "ഹൃദയം നിറഞ്ഞ ജന്മദിനാശംസകൾ, Shruthi! 🎂",
+                surpriseText: "നിങ്ങളുടെ ജീവിതത്തിലെ അടുത്ത അധ്യായം സന്തോഷവും മനോഹരമായ ഓർമ്മകളും വലിയ സ്വപ്നങ്ങളും അനവധി പുഞ്ചിരികളും കൊണ്ട് നിറഞ്ഞിരിക്കട്ടെ. എന്നും ഇങ്ങനെ തിളങ്ങിക്കൊണ്ടിരിക്കുക! ❤️🥳",
+                footer: "❤️ സ്നേഹത്തോടും മനോഹരമായ ഓർമ്മകളോടും കൂടി"
+            }
+        };
+
+        function getCurrentLanguageCode() {
+            return window.selectedBirthdayLanguage || "en";
+        }
+
+        function showGrandFinale() {
+            const finale = document.getElementById("grand-finale");
+            if (!finale) return;
+
+            const lang = getCurrentLanguageCode();
+            const t = FINAL_LANGUAGE_TEXT[lang] || FINAL_LANGUAGE_TEXT.en;
+
+            document.getElementById("finale-title").innerText = t.title;
+            document.getElementById("finale-message").innerHTML =
+                '<span id="typed-final-message"></span><span class="typing-cursor"></span>';
+            document.getElementById("finale-surprise-btn").innerText = t.button;
+            document.getElementById("final-surprise-title").innerText = t.surpriseTitle;
+            document.getElementById("final-surprise-text").innerText = t.surpriseText;
+            document.getElementById("finale-footer").innerText = t.footer;
+
+            buildFinalePhotoWall();
+            finale.style.display = "block";
+
+            requestAnimationFrame(() => {
+                finale.classList.add("show");
+            });
+
+            typeFinaleMessage(t.message);
+            startFinaleHearts();
+
+            setTimeout(() => createFinaleFireworks(), 700);
+            setTimeout(() => createFinaleFireworks(), 1800);
+            setTimeout(() => createFinaleFireworks(), 3000);
+
+            // Try to continue the background music after a user interaction.
+            if (typeof ambientLoopAudio !== "undefined") {
+                ambientLoopAudio.play().catch(() => {});
+            }
+        }
+
+        function typeFinaleMessage(message) {
+            const target = document.getElementById("typed-final-message");
+            if (!target) return;
+
+            target.textContent = "";
+            let i = 0;
+
+            const timer = setInterval(() => {
+                target.textContent += message.charAt(i);
+                i++;
+
+                if (i >= message.length) {
+                    clearInterval(timer);
+                }
+            }, 24);
+        }
+
+        function buildFinalePhotoWall() {
+            const wall = document.getElementById("finale-photo-wall");
+            if (!wall) return;
+
+            wall.innerHTML = "";
+
+            for (let i = 1; i <= 20; i++) {
+                const card = document.createElement("div");
+                card.className = "finale-photo";
+                card.style.setProperty("--delay", `${i * 0.08}s`);
+                card.style.setProperty("--rot", `${(Math.random() * 4 - 2).toFixed(2)}deg`);
+
+                const img = document.createElement("img");
+                img.src = `assets/${i}.jpeg`;
+                img.alt = `Memory ${i}`;
+                img.loading = "lazy";
+
+                img.onerror = () => {
+                    card.style.display = "none";
+                };
+
+                card.appendChild(img);
+                wall.appendChild(card);
+            }
+        }
+
+        function startFinaleHearts() {
+            let count = 0;
+
+            const heartTimer = setInterval(() => {
+                const heart = document.createElement("div");
+                heart.className = "finale-heart";
+                heart.innerText = ["❤️", "💖", "💕", "💗", "✨"][Math.floor(Math.random() * 5)];
+
+                heart.style.setProperty("--left", `${Math.random() * 100}vw`);
+                heart.style.setProperty("--size", `${16 + Math.random() * 22}px`);
+                heart.style.setProperty("--duration", `${5 + Math.random() * 5}s`);
+                heart.style.setProperty("--drift", `${-80 + Math.random() * 160}px`);
+
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 11000);
+
+                count++;
+                if (count >= 35) clearInterval(heartTimer);
+            }, 220);
+        }
+
+        function createFinaleFireworks() {
+            const x = 15 + Math.random() * 70;
+            const y = 12 + Math.random() * 42;
+
+            const core = document.createElement("div");
+            core.className = "finale-firework-core";
+            core.style.setProperty("--cx", `${x}vw`);
+            core.style.setProperty("--cy", `${y}vh`);
+            document.body.appendChild(core);
+            setTimeout(() => core.remove(), 500);
+
+            const particleCount = 32;
+
+            for (let i = 0; i < particleCount; i++) {
+                const p = document.createElement("div");
+                p.className = "finale-firework";
+
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const distance = 50 + Math.random() * 110;
+
+                p.style.setProperty("--fx", `${x}vw`);
+                p.style.setProperty("--fy", `${y}vh`);
+                p.style.setProperty("--tx", `${Math.cos(angle) * distance}px`);
+                p.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
+
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1300);
+            }
+        }
+
+        // ===== WATER-DROPLET SCRATCH REVEAL FOR THE SPECIAL PHOTO =====
+        let specialScratchReady = false;
+        let specialScratchFinished = false;
+        let specialScratchStrokes = 0;
+
+        function initSpecialWaterScratch() {
+            const canvas = document.getElementById("special-water-canvas");
+            const box = document.getElementById("special-photo-box");
+            const photo = document.getElementById("special-photo");
+            const instruction = document.getElementById("water-instruction");
+            if (!canvas || !box || !photo) return;
+
+            const rect = box.getBoundingClientRect();
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            const width = Math.max(1, Math.floor(rect.width));
+            const height = Math.max(1, Math.floor(rect.height));
+
+            canvas.width = Math.floor(width * dpr);
+            canvas.height = Math.floor(height * dpr);
+            canvas.style.width = width + "px";
+            canvas.style.height = height + "px";
+
+            const ctx = canvas.getContext("2d", { willReadFrequently: true });
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.globalCompositeOperation = "source-over";
+
+            // Deep watery glass base.
+            const waterGradient = ctx.createRadialGradient(
+                width * .5, height * .45, 10,
+                width * .5, height * .5, Math.max(width, height) * .75
+            );
+            waterGradient.addColorStop(0, "rgb(56,189,248)");
+            waterGradient.addColorStop(.35, "rgb(14,116,144)");
+            waterGradient.addColorStop(.72, "rgb(15,23,42)");
+            waterGradient.addColorStop(1, "rgb(2,6,23)");
+            ctx.fillStyle = waterGradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Soft watery light.
+            const glow = ctx.createRadialGradient(width*.5, height*.5, 0, width*.5, height*.5, width*.55);
+            glow.addColorStop(0, "rgba(255,255,255,.16)");
+            glow.addColorStop(.35, "rgba(125,211,252,.08)");
+            glow.addColorStop(1, "rgba(0,0,0,0)");
+            ctx.fillStyle = glow;
+            ctx.fillRect(0, 0, width, height);
+
+            // Water droplets with highlights and ripples.
+            const drops = Math.max(35, Math.floor((width * height) / 11000));
+            for (let i = 0; i < drops; i++) {
+                const x = 20 + Math.random() * (width - 40);
+                const y = 20 + Math.random() * (height - 40);
+                const r = 5 + Math.random() * 18;
+
+                const dg = ctx.createRadialGradient(x-r*.35, y-r*.4, 1, x, y, r);
+                dg.addColorStop(0, "rgba(255,255,255,.55)");
+                dg.addColorStop(.18, "rgba(186,230,253,.28)");
+                dg.addColorStop(.7, "rgba(14,165,233,.12)");
+                dg.addColorStop(1, "rgba(2,132,199,.02)");
+                ctx.fillStyle = dg;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = "rgba(186,230,253,.22)";
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(x, y, r * 1.35, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = "rgba(255,255,255,.92)";
+            ctx.font = "800 20px Segoe UI, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("💧", width/2, height/2 - 26);
+
+            specialScratchReady = true;
+            specialScratchFinished = false;
+            specialScratchStrokes = 0;
+
+            const erase = (clientX, clientY) => {
+                if (!specialScratchReady || specialScratchFinished) return;
+                const r = canvas.getBoundingClientRect();
+                const x = clientX - r.left;
+                const y = clientY - r.top;
+                if (x < 0 || y < 0 || x > r.width || y > r.height) return;
+
+                ctx.save();
+                ctx.globalCompositeOperation = "destination-out";
+                ctx.beginPath();
+                ctx.arc(x, y, Math.max(34, Math.min(52, r.width * .045)), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                specialScratchStrokes++;
+
+                if (instruction && specialScratchStrokes > 4) {
+                    instruction.classList.add("hidden");
+                }
+
+                // Small water ripple at the scratch point.
+                const ripple = document.createElement("div");
+                ripple.className = "water-drop-ring";
+                ripple.style.left = x + "px";
+                ripple.style.top = y + "px";
+                box.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 800);
+
+                if (specialScratchStrokes % 12 === 0) {
+                    checkSpecialScratchProgress(ctx, width, height, canvas);
+                }
+            };
+
+            canvas.onpointerdown = (e) => {
+                e.preventDefault();
+                canvas.setPointerCapture?.(e.pointerId);
+                erase(e.clientX, e.clientY);
+            };
+            canvas.onpointermove = (e) => {
+                if (e.buttons !== 1) return;
+                e.preventDefault();
+                erase(e.clientX, e.clientY);
+            };
+            canvas.onpointerup = (e) => {
+                e.preventDefault();
+                checkSpecialScratchProgress(ctx, width, height, canvas);
+            };
+            canvas.onpointercancel = canvas.onpointerup;
+
+            // Ensure the first frame is rendered before the user starts scratching.
+            requestAnimationFrame(() => checkSpecialScratchProgress(ctx, width, height, canvas, true));
+        }
+
+        function checkSpecialScratchProgress(ctx, width, height, canvas, initial = false) {
+            if (specialScratchFinished || !specialScratchReady) return;
+            if (initial) return;
+
+            const sampleStep = Math.max(8, Math.floor(Math.min(width, height) / 55));
+            const pixels = ctx.getImageData(0, 0, width, height).data;
+            let transparent = 0;
+            let total = 0;
+
+            for (let y = 0; y < height; y += sampleStep) {
+                for (let x = 0; x < width; x += sampleStep) {
+                    const idx = (y * width + x) * 4 + 3;
+                    if (pixels[idx] < 25) transparent++;
+                    total++;
+                }
+            }
+
+            const percentage = transparent / total;
+            if (percentage >= 0.68 || specialScratchStrokes >= 160) {
+                finishSpecialWaterReveal();
+            }
+        }
+
+        function finishSpecialWaterReveal() {
+            if (specialScratchFinished) return;
+            specialScratchFinished = true;
+            specialScratchReady = false;
+
+            const canvas = document.getElementById("special-water-canvas");
+            const photo = document.getElementById("special-photo");
+            const instruction = document.getElementById("water-instruction");
+
+            if (instruction) instruction.classList.add("hidden");
+
+            // Fade away the remaining water and bring the photo into sharp focus.
+            if (canvas) canvas.classList.add("finished");
+            if (photo) {
+                photo.classList.remove("revealed");
+                requestAnimationFrame(() => photo.classList.add("revealed"));
+            }
+
+            setTimeout(() => {
+                if (canvas) canvas.style.display = "none";
+                if (photo) {
+                    photo.style.opacity = "1";
+                    photo.style.visibility = "visible";
+                }
+            }, 1300);
+        }
+
+        function openFinalSurprise() {
+            const box = document.getElementById("finale-last-surprise");
+            if (!box) return;
+
+            box.classList.add("show");
+
+            const button = document.getElementById("finale-surprise-btn");
+            if (button) {
+                button.innerText = "💧 Scratch to Reveal ❤️";
+                button.disabled = true;
+                button.style.opacity = "0.75";
+            }
+
+            // Initialize the water-droplet scratch layer after the box is visible.
+            setTimeout(() => {
+                initSpecialWaterScratch();
+            }, 100);
+
+            // Final fireworks and floating hearts start while the user scratches.
+            for (let i = 0; i < 6; i++) {
+                setTimeout(createFinaleFireworks, i * 450);
+            }
+            startFinaleHearts();
+        }
+
+        // Called after the final (20th) scratch card is completely revealed.
+        function triggerGrandFinaleAfterLastPhoto() {
+            if (window.grandFinaleShown) return;
+            window.grandFinaleShown = true;
+
+            setTimeout(() => {
+                showGrandFinale();
+            }, 1400);
+        }
+
+
+        // Keep every memory card bright once the candle stage is completed.
+        function brightenAllMemoryCards() {
+            const wrapper = document.getElementById("timeline-spine-wrapper");
+            if (!wrapper) return;
+
+            wrapper.classList.add("revealed-gallery");
+
+            wrapper.querySelectorAll(".timeline-milestone, .memory-card, .card-media-box, .scratch-canvas")
+                .forEach(el => {
+                    el.style.opacity = "1";
+                    el.style.visibility = "visible";
+                });
+        }
+
+</script>
+</body>
+</html>
